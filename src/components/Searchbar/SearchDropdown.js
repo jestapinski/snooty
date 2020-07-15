@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { css, keyframes } from '@emotion/core';
 import styled from '@emotion/styled';
 import { uiColors } from '@leafygreen-ui/palette';
 import { theme } from '../../theme/docsTheme';
+import SearchFooter from './SearchFooter';
+import SearchResults from './SearchResults';
 
-const SEARCH_RESULTS_DESKTOP_HEIGHT = 368;
-const SEARCH_FOOTER_DESKTOP_HEIGHT = theme.size.xlarge;
+const RESULTS_PER_PAGE = 3;
 
 const animationKeyframe = startingOpacity => keyframes`
     0% {
@@ -23,22 +24,7 @@ const fadeInAnimation = (startingOpacity, seconds) => css`
   animation-duration: ${seconds};
 `;
 
-const SearchResults = styled('div')`
-  box-shadow: 0 0 ${theme.size.tiny} 0 rgba(184, 196, 194, 0.48);
-  height: ${SEARCH_RESULTS_DESKTOP_HEIGHT}px;
-  position: relative;
-  /* Give top padding on desktop to offset this extending into the searchbar */
-  padding-top: ${theme.size.default};
-  width: 100%;
-  @media ${theme.screenSize.upToXSmall} {
-    /* On mobile, let the dropdown take the available height */
-    box-shadow: 0 0 0 0;
-    height: calc(100% - ${SEARCH_FOOTER_DESKTOP_HEIGHT} - 36px);
-    padding-top: 0;
-  }
-`;
-
-const SearchResultsContainer = styled('div')`
+const SearchDropdownContainer = styled('div')`
   background-color: #ffffff;
   border-radius: 0 0 ${theme.size.tiny} ${theme.size.tiny};
   opacity: 1;
@@ -54,21 +40,22 @@ const SearchResultsContainer = styled('div')`
   }
 `;
 
-const SearchFooter = styled('div')`
-  box-shadow: 0 0 ${theme.size.tiny} 0 rgba(184, 196, 194, 0.64);
-  height: ${SEARCH_FOOTER_DESKTOP_HEIGHT};
-  position: relative;
-  width: 100%;
-  @media ${theme.screenSize.upToXSmall} {
-    display: none;
-  }
-`;
-
-const SearchDropdown = () => (
-  <SearchResultsContainer>
-    <SearchResults />
-    <SearchFooter />
-  </SearchResultsContainer>
-);
+const SearchDropdown = ({ results, searchTerm }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = useMemo(() => (results ? Math.ceil(results.length / RESULTS_PER_PAGE) : 0), [results]);
+  const visibleResults = useMemo(() => {
+    if (!results) return [];
+    const start = (currentPage - 1) * RESULTS_PER_PAGE;
+    const end = currentPage * RESULTS_PER_PAGE;
+    return results.slice(start, end);
+  }, [currentPage, results]);
+  return (
+    <SearchDropdownContainer>
+      <p strong>Most relevant results ({results ? results.length : 0})</p>
+      <SearchResults searchTerm={searchTerm} visibleResults={visibleResults} />
+      <SearchFooter currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
+    </SearchDropdownContainer>
+  );
+};
 
 export default SearchDropdown;
