@@ -211,16 +211,14 @@ const Searchbar = ({ isExpanded, setIsExpanded }) => {
     setIsFocused(true);
   }, [blurEvent]);
   // The React onBlur event fires when tabbing between child elements
-  const onBlur = useCallback(
-    () =>
-      setBlurEvent(
-        setTimeout(() => {
-          setIsFocused(false);
-          setIsExpanded(!!value);
-        }, 0)
-      ),
-    [setIsExpanded, value]
-  );
+  const onBlur = useCallback(() => {
+    setBlurEvent(
+      setTimeout(() => {
+        setIsFocused(false);
+        setIsExpanded(!!value);
+      }, 0)
+    );
+  }, [setIsExpanded, value]);
   return (
     <SearchbarContainer isExpanded={isExpanded} onBlur={onBlur} onFocus={onFocus}>
       {isExpanded ? (
