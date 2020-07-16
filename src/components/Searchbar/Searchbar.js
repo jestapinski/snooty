@@ -12,6 +12,7 @@ import SearchDropdown from './SearchDropdown';
 const BUTTON_SIZE = theme.size.medium;
 const GO_BUTTON_COLOR = uiColors.green.light3;
 const GO_BUTTON_SIZE = '20px';
+const SEARCH_DELAY_TIME = 200;
 const SEARCHBAR_DESKTOP_WIDTH = 372;
 const SEARCHBAR_HEIGHT = 36;
 const SEARCHBAR_HEIGHT_OFFSET = '5px';
@@ -196,11 +197,14 @@ const SearchbarContainer = styled('div')`
   }
 `;
 
-const Searchbar = ({ isExpanded, setIsExpanded }) => {
+const resultsToJSON = r => r.results;
+
+const Searchbar = ({ getResultsFromJson = resultsToJSON, isExpanded, setIsExpanded, searchParamsToURL }) => {
   const [value, setValue] = useState('');
-  const onChange = useCallback(e => setValue(e.target.value), []);
   const { isMobile } = useScreenSize();
   const [blurEvent, setBlurEvent] = useState(null);
+  const [searchEvent, setSearchEvent] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
 
   // A user is searching if the text input is focused and it is not empty
@@ -219,6 +223,22 @@ const Searchbar = ({ isExpanded, setIsExpanded }) => {
       }, 0)
     );
   }, [setIsExpanded, value]);
+  const onSearchChange = useCallback(
+    e => {
+      const value = e.target.value;
+      setValue(e.target.value);
+      clearTimeout(searchEvent);
+      // Set a timeout to trigger the search to avoid over-requesting
+      setSearchEvent(
+        setTimeout(async () => {
+          const result = await fetch(searchParamsToURL(value, {}));
+          const resultJson = await result.json();
+          setSearchResults(getResultsFromJson(resultJson));
+        }, SEARCH_DELAY_TIME)
+      );
+    },
+    [getResultsFromJson, searchEvent, searchParamsToURL]
+  );
   return (
     <SearchbarContainer isExpanded={isExpanded} onBlur={onBlur} onFocus={onFocus}>
       {isExpanded ? (
@@ -228,7 +248,7 @@ const Searchbar = ({ isExpanded, setIsExpanded }) => {
             autoFocus
             label="Search Docs"
             isSearching={isSearching}
-            onChange={onChange}
+            onChange={onSearchChange}
             placeholder="Search Documentation"
             tabIndex="0"
             value={value}
@@ -243,7 +263,7 @@ const Searchbar = ({ isExpanded, setIsExpanded }) => {
               glyph={<TextActionIcon glyph="X" fill={uiColors.gray.base} />}
             />
           )}
-          {isSearching && <SearchDropdown />}
+          {isSearching && <SearchDropdown results={searchResults} />}
         </>
       ) : (
         <ExpandButton aria-label="Open MongoDB Docs Search" onClick={() => setIsExpanded(true)}>
