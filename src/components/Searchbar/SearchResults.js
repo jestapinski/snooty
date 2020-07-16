@@ -1,14 +1,11 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { theme } from '../../theme/docsTheme';
+import SearchResult from './SearchResult';
 
 const SEARCHBAR_HEIGHT = 36;
 const SEARCH_RESULTS_DESKTOP_HEIGHT = 368;
 const SEARCH_FOOTER_DESKTOP_HEIGHT = theme.size.xlarge;
-
-const SearchResultContainer = styled('div')`
-  display: block;
-`;
 
 const SearchResultsContainer = styled('div')`
   box-shadow: 0 0 ${theme.size.tiny} 0 rgba(184, 196, 194, 0.48);
@@ -27,14 +24,6 @@ const SearchResultsContainer = styled('div')`
     padding-top: 0;
   }
 `;
-
-const SearchResult = React.memo(({ preview, title, url }) => (
-  <SearchResultContainer>
-    <p>Title: {title}</p>
-    <p>Preview: {preview}</p>
-    <p>Url: {url}</p>
-  </SearchResultContainer>
-));
 
 const SearchResults = ({ visibleResults }) => (
   <SearchResultsContainer>
