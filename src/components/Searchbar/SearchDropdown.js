@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { css, keyframes } from '@emotion/core';
 import styled from '@emotion/styled';
 import { uiColors } from '@leafygreen-ui/palette';
 import { theme } from '../../theme/docsTheme';
 import Pagination from './Pagination';
 
+const RESULTS_PER_PAGE = 3;
 const SEARCHBAR_HEIGHT = 36;
 const SEARCH_RESULTS_DESKTOP_HEIGHT = 368;
 const SEARCH_FOOTER_DESKTOP_HEIGHT = theme.size.xlarge;
@@ -72,11 +73,17 @@ const SearchFooter = styled('div')`
 `;
 
 const SearchDropdown = ({ results = [] }) => {
+  const [visibleResults, setVisibleResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = results ? results.length : 0;
+  const totalPages = results ? Math.ceil(results.length / RESULTS_PER_PAGE) : 0;
+  useEffect(() => {
+    const start = (currentPage - 1) * RESULTS_PER_PAGE;
+    const end = currentPage * RESULTS_PER_PAGE;
+    setVisibleResults(results.slice(start, end));
+  }, [currentPage, results]);
   return (
     <SearchResultsContainer>
-      <SearchResults />
+      <SearchResults visibleResults={visibleResults} />
       <SearchFooter>
         <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
       </SearchFooter>
