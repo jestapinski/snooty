@@ -67,7 +67,7 @@ const SearchDropdown = ({ results = [] }) => {
   }, [currentPage, results]);
   return (
     <SearchResultsContainer>
-      <SearchResults visibleResults={visibleResults} />
+      <SearchResults totalResultsCount={results.length} visibleResults={visibleResults} />
       <SearchFooter>
         <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
       </SearchFooter>
