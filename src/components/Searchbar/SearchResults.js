@@ -32,7 +32,7 @@ const SearchResults = ({ totalResultsCount, visibleResults }) => (
       <strong>Most Relevant Results ({totalResultsCount})</strong>
     </p>
     {visibleResults.map(({ title, preview, url }) => (
-      <SearchResult title={title} preview={preview} url={url} />
+      <SearchResult key={url} title={title} preview={preview} url={url} />
     ))}
   </SearchResultsContainer>
 );

@@ -228,14 +228,16 @@ const Searchbar = ({ getResultsFromJson = resultsToJSON, isExpanded, setIsExpand
       const value = e.target.value;
       setValue(e.target.value);
       clearTimeout(searchEvent);
-      // Set a timeout to trigger the search to avoid over-requesting
-      setSearchEvent(
-        setTimeout(async () => {
-          const result = await fetch(searchParamsToURL(value, {}));
-          const resultJson = await result.json();
-          setSearchResults(getResultsFromJson(resultJson));
-        }, SEARCH_DELAY_TIME)
-      );
+      if (value) {
+        // Set a timeout to trigger the search to avoid over-requesting
+        setSearchEvent(
+          setTimeout(async () => {
+            const result = await fetch(searchParamsToURL(value, {}));
+            const resultJson = await result.json();
+            setSearchResults(getResultsFromJson(resultJson));
+          }, SEARCH_DELAY_TIME)
+        );
+      }
     },
     [getResultsFromJson, searchEvent, searchParamsToURL]
   );
