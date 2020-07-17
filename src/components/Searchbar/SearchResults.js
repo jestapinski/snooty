@@ -16,7 +16,7 @@ const SearchResultsContainer = styled('div')`
   height: ${SEARCH_RESULTS_DESKTOP_HEIGHT}px;
   position: relative;
   /* Give top padding on desktop to offset this extending into the searchbar */
-  padding: 38px 24px 0 24px;
+  padding-top: 38px;
   width: 100%;
   @media ${theme.screenSize.upToXSmall} {
     box-shadow: none;
@@ -26,13 +26,19 @@ const SearchResultsContainer = styled('div')`
   }
 `;
 
+const StyledSearchResult = styled(SearchResult)`
+  max-height: 100%;
+  height: 102px;
+  padding: 16px 24px;
+`;
+
 const SearchResults = ({ totalResultsCount, visibleResults }) => (
   <SearchResultsContainer>
-    <p>
+    <p style={{ paddingLeft: '24px' }}>
       <strong>Most Relevant Results ({totalResultsCount})</strong>
     </p>
     {visibleResults.map(({ title, preview, url }) => (
-      <SearchResult key={url} title={title} preview={preview} url={url} />
+      <StyledSearchResult key={url} title={title} preview={preview} url={url} />
     ))}
   </SearchResultsContainer>
 );

@@ -3,17 +3,21 @@ import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 const SearchResultLink = styled('a')`
+  color: #494747;
   text-decoration: none;
   :hover,
   :focus {
+    color: #494747;
     text-decoration: none;
   }
 `;
 
 const SearchResultContainer = styled('div')`
-  display: block;
-  max-height: 100%;
-  height: 100%;
+  :hover,
+  :focus {
+    background-color: #d8d8d8;
+    transition: background-color 150ms ease-in;
+  }
 `;
 
 const truncate = maxLines => css`
@@ -23,10 +27,10 @@ const truncate = maxLines => css`
   overflow: hidden;
 `;
 
-const SearchResult = React.memo(({ maxLines = 2, preview, title, url }) => (
+const SearchResult = React.memo(({ maxLines = 2, preview, title, url, ...props }) => (
   <SearchResultLink href={url}>
-    <SearchResultContainer>
-      <p>
+    <SearchResultContainer {...props}>
+      <p css={truncate(1)}>
         <strong>{title}</strong>
       </p>
       <p css={truncate(maxLines)}>{preview}</p>
