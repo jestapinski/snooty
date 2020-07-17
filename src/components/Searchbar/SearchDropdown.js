@@ -63,6 +63,8 @@ const SearchFooter = styled('div')`
   height: ${SEARCH_FOOTER_DESKTOP_HEIGHT};
   justify-content: flex-end;
   position: relative;
+  padding-left: ${theme.size.default};
+  padding-right: ${theme.size.default};
   width: 100%;
   @media ${theme.screenSize.upToXSmall} {
     display: none;
