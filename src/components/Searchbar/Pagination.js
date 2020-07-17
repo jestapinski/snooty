@@ -4,15 +4,15 @@ import Button from '@leafygreen-ui/button';
 import Icon from '@leafygreen-ui/icon';
 import { theme } from '../../theme/docsTheme';
 
-const BUTTON_SIZE = theme.size.medium;
+const BUTTON_HEIGHT = theme.size.medium;
+const BUTTON_WIDTH = '14px';
 
 const PaginationButton = styled(Button)`
   background-color: #fff;
-  border-radius: ${BUTTON_SIZE};
-  height: ${BUTTON_SIZE};
+  height: ${BUTTON_HEIGHT};
   /* button is 24 px and entire container is 36px so 6px top gives equal spacing */
-
-  width: ${BUTTON_SIZE};
+  padding: 0;
+  width: ${BUTTON_WIDTH};
   z-index: 1;
   /* Below removes default hover effects from button */
   background-image: none;
@@ -27,10 +27,11 @@ const PaginationButton = styled(Button)`
 `;
 
 const PaginationButtonIcon = styled(Icon)`
-  /* This icon is 16px tall in a 24 px button, so 4px gives equal spacing */
-  left: ${theme.size.tiny};
+  height: ${BUTTON_HEIGHT};
+  left: 0;
   position: absolute;
-  top: ${theme.size.tiny};
+  top: 0;
+  width: ${BUTTON_WIDTH};
 `;
 
 const PaginationContainer = styled('div')`
