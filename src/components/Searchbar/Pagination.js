@@ -39,7 +39,7 @@ const PaginationContainer = styled('div')`
 `;
 
 const PaginationText = styled('p')`
-  margin-bottom: 0;
+  margin: 0 ${theme.size.tiny};
   line-height: 22px;
 `;
 
