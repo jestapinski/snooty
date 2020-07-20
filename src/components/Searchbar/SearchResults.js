@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import useScreenSize from '../../hooks/useScreenSize';
 import { theme } from '../../theme/docsTheme';
 import SearchResult from './SearchResult';
 
 const SEARCHBAR_HEIGHT = 36;
 const SEARCH_RESULTS_DESKTOP_HEIGHT = 368;
-const SEARCH_FOOTER_DESKTOP_HEIGHT = theme.size.xlarge;
 
 const SearchResultsContainer = styled('div')`
   align-items: center;
@@ -21,8 +21,9 @@ const SearchResultsContainer = styled('div')`
   @media ${theme.screenSize.upToXSmall} {
     box-shadow: none;
     /* On mobile, let the dropdown take the available height */
-    height: calc(100% - ${SEARCH_FOOTER_DESKTOP_HEIGHT} - ${SEARCHBAR_HEIGHT}px);
-    padding-top: 0;
+    height: calc(100% - ${SEARCHBAR_HEIGHT}px);
+    padding-top: 24px;
+    overflow-y: scroll;
   }
 `;
 
@@ -32,15 +33,18 @@ const StyledSearchResult = styled(SearchResult)`
   padding: 16px 24px;
 `;
 
-const SearchResults = ({ totalResultsCount, visibleResults }) => (
-  <SearchResultsContainer>
-    <p style={{ paddingLeft: '24px' }}>
-      <strong>Most Relevant Results ({totalResultsCount})</strong>
-    </p>
-    {visibleResults.map(({ title, preview, url }) => (
-      <StyledSearchResult key={url} title={title} preview={preview} url={url} />
-    ))}
-  </SearchResultsContainer>
-);
+const SearchResults = ({ totalResultsCount, visibleResults }) => {
+  const { isMobile } = useScreenSize();
+  return (
+    <SearchResultsContainer>
+      <p style={{ paddingLeft: '24px' }}>
+        <strong>{isMobile ? 'Top search results' : `Most Relevant Results (${totalResultsCount})`}</strong>
+      </p>
+      {visibleResults.map(({ title, preview, url }) => (
+        <StyledSearchResult key={url} title={title} preview={preview} url={url} />
+      ))}
+    </SearchResultsContainer>
+  );
+};
 
 export default SearchResults;
