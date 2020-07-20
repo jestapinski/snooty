@@ -13,7 +13,7 @@ exports[`renders correctly without browser 1`] = `
       ]}"
     id="navbar"
     isExpanded={false}
-    isMediumScreen={false}
+    shouldOpaqueWhenExpanded={true}
     tabIndex="0"
   />
   <Searchbar

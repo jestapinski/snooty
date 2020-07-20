@@ -25,7 +25,6 @@ exports[`renders correctly without browser 2`] = `
   onFocus={[Function]}
 >
   <MagnifyingGlass
-    fill="#061621"
     glyph="MagnifyingGlass"
   />
   <StyledTextInput
