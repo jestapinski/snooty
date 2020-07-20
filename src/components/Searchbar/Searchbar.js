@@ -7,6 +7,7 @@ import { uiColors } from '@leafygreen-ui/palette';
 import TextInput from '@leafygreen-ui/text-input';
 import useScreenSize from '../../hooks/useScreenSize';
 import { theme } from '../../theme/docsTheme';
+import { getSearchbarResultsFromJSON } from '../../utils/get-searchbar-results-from-json';
 import SearchDropdown from './SearchDropdown';
 
 const BUTTON_SIZE = theme.size.medium;
@@ -197,9 +198,12 @@ const SearchbarContainer = styled('div')`
   }
 `;
 
-const resultsToJSON = r => r.results;
-
-const Searchbar = ({ getResultsFromJson = resultsToJSON, isExpanded, setIsExpanded, searchParamsToURL }) => {
+const Searchbar = ({
+  getResultsFromJson = getSearchbarResultsFromJSON,
+  isExpanded,
+  setIsExpanded,
+  searchParamsToURL,
+}) => {
   const [value, setValue] = useState('');
   const { isMobile } = useScreenSize();
   const [blurEvent, setBlurEvent] = useState(null);
