@@ -231,6 +231,7 @@ const Searchbar = ({
     e => {
       const value = e.target.value;
       setValue(e.target.value);
+      // Debounce any queued search event since the query has changed
       clearTimeout(searchEvent);
       if (value) {
         // Set a timeout to trigger the search to avoid over-requesting

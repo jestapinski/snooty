@@ -1,25 +1,12 @@
 import React from 'react';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
+import { theme } from '../../theme/docsTheme';
 
-const SearchResultLink = styled('a')`
-  color: #494747;
-  text-decoration: none;
-  :hover,
-  :focus {
-    color: #494747;
-    text-decoration: none;
-  }
-`;
+const LINK_COLOR = '#494747';
+const RESULT_HOVER_COLOR = '#d8d8d8';
 
-const SearchResultContainer = styled('div')`
-  :hover,
-  :focus {
-    background-color: #d8d8d8;
-    transition: background-color 150ms ease-in;
-  }
-`;
-
+// Truncates text to a maximum number of lines
 const truncate = maxLines => css`
   display: -webkit-box;
   -webkit-line-clamp: ${maxLines}; /* supported cross browser */
@@ -27,13 +14,51 @@ const truncate = maxLines => css`
   overflow: hidden;
 `;
 
+const SearchResultContainer = styled('div')`
+  :hover,
+  :focus {
+    background-color: ${RESULT_HOVER_COLOR};
+    transition: background-color 150ms ease-in;
+  }
+`;
+
+const SearchResultLink = styled('a')`
+  color: ${LINK_COLOR};
+  height: 100%;
+  text-decoration: none;
+  :hover,
+  :focus {
+    color: ${LINK_COLOR};
+    text-decoration: none;
+  }
+`;
+
+const StyledPreviewText = styled('p')`
+  margin-bottom: 0;
+  font-family: Akzidenz;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  line-height: 20px;
+  ${({ maxLines }) => truncate(maxLines)};
+`;
+
+const StyledResultTitle = styled('p')`
+  margin-bottom: 6px;
+  font-family: Akzidenz;
+  font-size: 14px;
+  line-height: ${theme.size.medium};
+  letter-spacing: 0.5px;
+  height: ${theme.size.medium};
+  ${truncate(1)};
+`;
+
 const SearchResult = React.memo(({ maxLines = 2, preview, title, url, ...props }) => (
   <SearchResultLink href={url}>
     <SearchResultContainer {...props}>
-      <p css={truncate(1)}>
+      <StyledResultTitle>
         <strong>{title}</strong>
-      </p>
-      <p css={truncate(maxLines)}>{preview}</p>
+      </StyledResultTitle>
+      <StyledPreviewText maxLines={maxLines}>{preview}</StyledPreviewText>
     </SearchResultContainer>
   </SearchResultLink>
 ));
