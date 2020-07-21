@@ -8,6 +8,10 @@ const SEARCH_RESULTS_DESKTOP_HEIGHT = '368px';
 const SEARCH_RESULT_HEIGHT = '102px';
 
 const StyledResultText = styled('p')`
+  font-family: Akzidenz;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  margin: 0;
   padding-left: ${theme.size.medium};
 `;
 

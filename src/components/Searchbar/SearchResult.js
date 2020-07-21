@@ -34,21 +34,23 @@ const SearchResultLink = styled('a')`
 `;
 
 const StyledPreviewText = styled('p')`
-  margin-bottom: 0;
   font-family: Akzidenz;
   font-size: 14px;
   letter-spacing: 0.5px;
   line-height: 20px;
+  margin-bottom: 0;
+  margin-top: 0;
   ${({ maxLines }) => truncate(maxLines)};
 `;
 
 const StyledResultTitle = styled('p')`
-  margin-bottom: 6px;
   font-family: Akzidenz;
   font-size: 14px;
   line-height: ${theme.size.medium};
   letter-spacing: 0.5px;
   height: ${theme.size.medium};
+  margin-bottom: 6px;
+  margin-top: 0;
   ${truncate(1)};
 `;
 
