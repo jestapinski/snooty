@@ -2,15 +2,17 @@ import React, { useCallback, useMemo } from 'react';
 import styled from '@emotion/styled';
 import Button from '@leafygreen-ui/button';
 import Icon from '@leafygreen-ui/icon';
+import { uiColors } from '@leafygreen-ui/palette';
 import { theme } from '../../theme/docsTheme';
 
 const BUTTON_HEIGHT = theme.size.medium;
 const BUTTON_WIDTH = '14px';
+const ENABLED_COLOR = uiColors.gray.dark2;
+const DISABLED_COLOR = uiColors.gray.light1;
 
 const PaginationButton = styled(Button)`
   background-color: #fff;
   height: ${BUTTON_HEIGHT};
-  /* button is 24 px and entire container is 36px so 6px top gives equal spacing */
   padding: 0;
   width: ${BUTTON_WIDTH};
   z-index: 1;
@@ -35,12 +37,13 @@ const PaginationButtonIcon = styled(Icon)`
 `;
 
 const PaginationContainer = styled('div')`
+  align-items: center;
   display: flex;
 `;
 
 const PaginationText = styled('p')`
+  font-size: ${theme.size.default};
   margin: 0 ${theme.size.tiny};
-  line-height: 22px;
 `;
 
 const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
@@ -53,13 +56,9 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
       <PaginationButton
         aria-label="Back Page"
         disabled={!canDecrementPage}
-        glyph={
-          <PaginationButtonIcon
-            glyph="ChevronLeft"
-            fill={canDecrementPage ? '#3D4F58' : '#B8C4C2'}
-            onClick={decrementPage}
-          />
-        }
+        glyph={<PaginationButtonIcon glyph="ChevronLeft" fill={canDecrementPage ? ENABLED_COLOR : DISABLED_COLOR} />}
+        onClick={decrementPage}
+        title="Back Page"
       />
       <PaginationText>
         <strong>
@@ -69,13 +68,9 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
       <PaginationButton
         aria-label="Forward Page"
         disabled={!canIncrementPage}
-        glyph={
-          <PaginationButtonIcon
-            glyph="ChevronRight"
-            fill={canIncrementPage ? '#3D4F58' : '#B8C4C2'}
-            onClick={incrementPage}
-          />
-        }
+        glyph={<PaginationButtonIcon glyph="ChevronRight" fill={canIncrementPage ? ENABLED_COLOR : DISABLED_COLOR} />}
+        onClick={incrementPage}
+        title="Forward Page"
       />
     </PaginationContainer>
   );
