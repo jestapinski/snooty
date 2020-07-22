@@ -270,7 +270,7 @@ const Searchbar = ({
               glyph={<TextActionIcon glyph="X" fill={uiColors.gray.base} />}
             />
           )}
-          {true && <SearchDropdown results={searchResults} />}
+          {isSearching && <SearchDropdown results={searchResults} />}
         </>
       ) : (
         <ExpandButton aria-label="Open MongoDB Docs Search" onClick={() => setIsExpanded(true)}>

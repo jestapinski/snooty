@@ -14,11 +14,29 @@ const truncate = maxLines => css`
   overflow: hidden;
 `;
 
+const MobileFooterContainer = styled('div')`
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: flex-end;
+`;
+
+const LearnMoreLink = styled('a')`
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  line-height: ${theme.size.default};
+`;
+
 const SearchResultContainer = styled('div')`
   :hover,
   :focus {
     background-color: ${RESULT_HOVER_COLOR};
     transition: background-color 150ms ease-in;
+  }
+  @media ${theme.screenSize.upToXSmall} {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 `;
 
@@ -46,21 +64,32 @@ const StyledPreviewText = styled('p')`
 const StyledResultTitle = styled('p')`
   font-family: Akzidenz;
   font-size: 14px;
+  font-weight: bolder;
   line-height: ${theme.size.medium};
   letter-spacing: 0.5px;
   height: ${theme.size.medium};
   margin-bottom: 6px;
   margin-top: 0;
   ${truncate(1)};
+  @media ${theme.screenSize.upToXSmall} {
+    font-size: 16px;
+    line-height: ${theme.size.medium};
+    font-weight: 300;
+  }
 `;
 
-const SearchResult = React.memo(({ maxLines = 2, preview, title, url, ...props }) => (
-  <SearchResultLink href={url}>
-    <SearchResultContainer {...props}>
-      <StyledResultTitle>
-        <strong>{title}</strong>
-      </StyledResultTitle>
+const SearchResult = React.memo(({ learnMoreLink = false, maxLines = 2, preview, title, url, ...props }) => (
+  <SearchResultLink href={url} {...props}>
+    <SearchResultContainer>
+      <StyledResultTitle>{title}</StyledResultTitle>
       <StyledPreviewText maxLines={maxLines}>{preview}</StyledPreviewText>
+      {learnMoreLink && (
+        <MobileFooterContainer>
+          <LearnMoreLink url={url}>
+            <strong>Learn More</strong>
+          </LearnMoreLink>
+        </MobileFooterContainer>
+      )}
     </SearchResultContainer>
   </SearchResultLink>
 ));
