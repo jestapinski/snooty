@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import SanitizedHTML from 'react-sanitized-html';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { theme } from '../../theme/docsTheme';
+import SearchContext from './SearchContext';
 
 const LINK_COLOR = '#494747';
 const RESULT_HOVER_COLOR = '#d8d8d8';
@@ -77,20 +79,32 @@ const StyledResultTitle = styled('p')`
   }
 `;
 
-const SearchResult = React.memo(({ learnMoreLink = false, maxLines = 2, preview, title, url, ...props }) => (
-  <SearchResultLink href={url} {...props}>
-    <SearchResultContainer>
-      <StyledResultTitle>{title}</StyledResultTitle>
-      <StyledPreviewText maxLines={maxLines}>{preview}</StyledPreviewText>
-      {learnMoreLink && (
-        <MobileFooterContainer>
-          <LearnMoreLink url={url}>
-            <strong>Learn More</strong>
-          </LearnMoreLink>
-        </MobileFooterContainer>
-      )}
-    </SearchResultContainer>
-  </SearchResultLink>
-));
+const highlightSearchTerm = (text, searchTerm) =>
+  text.replace(new RegExp(searchTerm, 'gi'), result => `<span style="background-color: #FEF2C8;">${result}</span>`);
+
+const SearchResult = React.memo(({ learnMoreLink = false, maxLines = 2, preview, title, url, ...props }) => {
+  const searchTerm = useContext(SearchContext);
+  const highlightedTitle = highlightSearchTerm(title, searchTerm);
+  const highlightedPreviewText = highlightSearchTerm(preview, searchTerm);
+  return (
+    <SearchResultLink href={url} {...props}>
+      <SearchResultContainer>
+        <StyledResultTitle>
+          <SanitizedHTML html={highlightedTitle} allowedAttributes={{ span: ['style'] }} allowedTags={['span']} />
+        </StyledResultTitle>
+        <StyledPreviewText maxLines={maxLines}>
+          <SanitizedHTML html={highlightedPreviewText} allowedAttributes={{ span: ['style'] }} allowedTags={['span']} />
+        </StyledPreviewText>
+        {learnMoreLink && (
+          <MobileFooterContainer>
+            <LearnMoreLink url={url}>
+              <strong>Learn More</strong>
+            </LearnMoreLink>
+          </MobileFooterContainer>
+        )}
+      </SearchResultContainer>
+    </SearchResultLink>
+  );
+});
 
 export default SearchResult;
