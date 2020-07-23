@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { css, keyframes } from '@emotion/core';
 import styled from '@emotion/styled';
+import Button from '@leafygreen-ui/button';
 import { uiColors } from '@leafygreen-ui/palette';
 import useScreenSize from '../../hooks/useScreenSize';
 import { theme } from '../../theme/docsTheme';
+import AdvancedFiltersPane from './AdvancedFiltersPane';
 import Pagination from './Pagination';
 import SearchResults from './SearchResults';
 
@@ -47,7 +49,7 @@ const SearchFooter = styled('div')`
   box-shadow: 0 0 ${theme.size.tiny} 0 rgba(184, 196, 194, 0.64);
   display: flex;
   height: ${SEARCH_FOOTER_DESKTOP_HEIGHT};
-  justify-content: flex-end;
+  justify-content: space-between;
   position: relative;
   padding-left: ${theme.size.default};
   padding-right: ${theme.size.default};
@@ -58,6 +60,7 @@ const SearchFooter = styled('div')`
 `;
 
 const SearchDropdown = ({ results = [] }) => {
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [visibleResults, setVisibleResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { isMobile } = useScreenSize();
@@ -73,9 +76,20 @@ const SearchDropdown = ({ results = [] }) => {
   }, [currentPage, isMobile, results]);
   return (
     <SearchResultsContainer>
-      <SearchResults totalResultsCount={results.length} visibleResults={visibleResults} />
+      {showAdvancedFilters ? (
+        <AdvancedFiltersPane />
+      ) : (
+        <SearchResults totalResultsCount={results.length} visibleResults={visibleResults} />
+      )}
       <SearchFooter>
-        <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
+        {showAdvancedFilters ? (
+          <Button onClick={() => setShowAdvancedFilters(false)}>Apply Search Criteria</Button>
+        ) : (
+          <>
+            <Button onClick={() => setShowAdvancedFilters(true)}>Advanced Filters</Button>
+            <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
+          </>
+        )}
       </SearchFooter>
     </SearchResultsContainer>
   );
