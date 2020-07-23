@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { css, keyframes } from '@emotion/core';
 import styled from '@emotion/styled';
 import Button from '@leafygreen-ui/button';
@@ -59,12 +59,37 @@ const SearchFooter = styled('div')`
   }
 `;
 
+const StyledFooterButton = styled(Button)`
+  color: ${uiColors.blue.base};
+  font-family: Akzidenz;
+  font-weight: bolder;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  line-height: ${theme.size.default};
+  margin: 0;
+  padding: ${theme.size.tiny};
+  cursor: pointer;
+  /* Below removes default hover effects from button */
+  background: none;
+  background-image: none;
+  border: none;
+  box-shadow: none;
+  :before {
+    display: none;
+  }
+  :after {
+    display: none;
+  }
+`;
+
 const SearchDropdown = ({ results = [] }) => {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [visibleResults, setVisibleResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { isMobile } = useScreenSize();
   const totalPages = results ? Math.ceil(results.length / RESULTS_PER_PAGE) : 0;
+  const closeFiltersPane = useCallback(() => setShowAdvancedFilters(false), []);
+  const openFiltersPane = useCallback(() => setShowAdvancedFilters(true), []);
   useEffect(() => {
     if (isMobile) {
       setVisibleResults(results);
@@ -77,16 +102,16 @@ const SearchDropdown = ({ results = [] }) => {
   return (
     <SearchResultsContainer>
       {showAdvancedFilters ? (
-        <AdvancedFiltersPane />
+        <AdvancedFiltersPane closeFiltersPane={closeFiltersPane} />
       ) : (
         <SearchResults totalResultsCount={results.length} visibleResults={visibleResults} />
       )}
       <SearchFooter>
         {showAdvancedFilters ? (
-          <Button onClick={() => setShowAdvancedFilters(false)}>Apply Search Criteria</Button>
+          <StyledFooterButton onClick={closeFiltersPane}>Apply Search Criteria</StyledFooterButton>
         ) : (
           <>
-            <Button onClick={() => setShowAdvancedFilters(true)}>Advanced Filters</Button>
+            <StyledFooterButton onClick={openFiltersPane}>Advanced Filters</StyledFooterButton>
             <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
           </>
         )}
