@@ -52,7 +52,7 @@ const SearchResultLink = styled('a')`
 `;
 
 const StyledPreviewText = styled('p')`
-  font-family: Akzidenz;
+  font-family: 'Akzidenz Grotesk BQ Light';
   font-size: 14px;
   letter-spacing: 0.5px;
   line-height: 20px;
@@ -64,7 +64,6 @@ const StyledPreviewText = styled('p')`
 const StyledResultTitle = styled('p')`
   font-family: Akzidenz;
   font-size: 14px;
-  font-weight: bolder;
   line-height: ${theme.size.medium};
   letter-spacing: 0.5px;
   height: ${theme.size.medium};
@@ -72,7 +71,7 @@ const StyledResultTitle = styled('p')`
   margin-top: 0;
   ${truncate(1)};
   @media ${theme.screenSize.upToXSmall} {
-    font-size: 16px;
+    font-size: ${theme.size.default};
     line-height: ${theme.size.medium};
     font-weight: 300;
   }
