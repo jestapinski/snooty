@@ -68,7 +68,6 @@ const StyledFooterButton = styled(Button)`
   line-height: ${theme.size.default};
   margin: 0;
   padding: ${theme.size.tiny};
-  cursor: pointer;
   /* Below removes default hover effects from button */
   background: none;
   background-image: none;

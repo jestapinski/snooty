@@ -11,7 +11,7 @@ const StyledAdvancedFiltersPane = styled('div')`
   box-shadow: 0 0 ${theme.size.tiny} 0 rgba(184, 196, 194, 0.48);
   height: ${SEARCH_RESULTS_DESKTOP_HEIGHT};
   position: relative;
-  padding: 38px ${theme.size.medium} 0;
+  padding: 38px ${theme.size.default} 0;
 `;
 
 const StyledReturnButton = styled(Button)`
@@ -21,8 +21,7 @@ const StyledReturnButton = styled(Button)`
   letter-spacing: 0.5px;
   line-height: ${theme.size.default};
   margin: 0;
-  padding: 0;
-  cursor: pointer;
+  padding: ${theme.size.tiny};
   /* Below removes default hover effects from button */
   background: none;
   background-image: none;
@@ -40,7 +39,8 @@ const AdvancedFiltersPane = ({ closeFiltersPane }) => {
   return (
     <StyledAdvancedFiltersPane>
       <StyledReturnButton onClick={closeFiltersPane}>
-        <Icon glyph="ArrowLeft" size="small" /> Cancel
+        <Icon glyph="ArrowLeft" size="small" />
+        &nbsp;Cancel
       </StyledReturnButton>
     </StyledAdvancedFiltersPane>
   );
