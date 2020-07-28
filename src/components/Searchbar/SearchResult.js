@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
-import SanitizedHTML from 'react-sanitized-html';
+import sanitizeHtml from 'sanitize-html';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
+import { uiColors } from '@leafygreen-ui/palette';
 import { theme } from '../../theme/docsTheme';
 import SearchContext from './SearchContext';
 
 const LINK_COLOR = '#494747';
 const RESULT_HOVER_COLOR = '#d8d8d8';
+// Use string for match styles due to replace/innerHTML
+const SEARCH_MATCH_STYLE = `background-color: ${uiColors.yellow.light2};`;
 
 // Truncates text to a maximum number of lines
 const truncate = maxLines => css`
@@ -50,6 +53,10 @@ const SearchResultLink = styled('a')`
   :focus {
     color: ${LINK_COLOR};
     text-decoration: none;
+    ${SearchResultContainer} {
+      background-color: rgba(231, 238, 236, 0.4);
+      transition: background-color 150ms ease-in;
+    }
   }
 `;
 
@@ -72,36 +79,37 @@ const StyledResultTitle = styled('p')`
   margin-bottom: 6px;
   margin-top: 0;
   ${truncate(1)};
-  @media ${theme.screenSize.upToXSmall} {
-    font-size: ${theme.size.default};
-    line-height: ${theme.size.medium};
-    font-weight: 300;
-  }
 `;
 
 const highlightSearchTerm = (text, searchTerm) =>
-  text.replace(new RegExp(searchTerm, 'gi'), result => `<span style="background-color: #FEF2C8;">${result}</span>`);
+  text.replace(new RegExp(searchTerm, 'gi'), result => `<span style="${SEARCH_MATCH_STYLE}">${result}</span>`);
 
-const SearchResult = React.memo(({ learnMoreLink = false, maxLines = 2, preview, title, url, ...props }) => {
+// since we are using dangerouslySetInnerHTML, this helper sanitizes input to be safe
+const sanitizePreviewHtml = text =>
+  sanitizeHtml(text, {
+    allowedTags: ['span'],
+    allowedAttributes: { span: ['style'] },
+    allowedStyles: { span: { 'background-color': [new RegExp(`^${uiColors.yellow.light2}$`, 'i')] } },
+  });
+
+const SearchResult = React.memo(({ maxLines = 2, preview, title, url, ...props }) => {
   const searchTerm = useContext(SearchContext);
   const highlightedTitle = highlightSearchTerm(title, searchTerm);
   const highlightedPreviewText = highlightSearchTerm(preview, searchTerm);
   return (
     <SearchResultLink href={url} {...props}>
       <SearchResultContainer>
-        <StyledResultTitle>
-          <SanitizedHTML html={highlightedTitle} allowedAttributes={{ span: ['style'] }} allowedTags={['span']} />
-        </StyledResultTitle>
-        <StyledPreviewText maxLines={maxLines}>
-          <SanitizedHTML html={highlightedPreviewText} allowedAttributes={{ span: ['style'] }} allowedTags={['span']} />
-        </StyledPreviewText>
-        {learnMoreLink && (
-          <MobileFooterContainer>
-            <LearnMoreLink url={url}>
-              <strong>Learn More</strong>
-            </LearnMoreLink>
-          </MobileFooterContainer>
-        )}
+        <StyledResultTitle
+          dangerouslySetInnerHTML={{
+            __html: sanitizePreviewHtml(highlightedTitle),
+          }}
+        />
+        <StyledPreviewText
+          maxLines={maxLines}
+          dangerouslySetInnerHTML={{
+            __html: sanitizePreviewHtml(highlightedPreviewText),
+          }}
+        />
       </SearchResultContainer>
     </SearchResultLink>
   );

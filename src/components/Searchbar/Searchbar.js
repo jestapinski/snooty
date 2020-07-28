@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useRef } from 'react';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import Button from '@leafygreen-ui/button';
@@ -6,14 +6,15 @@ import Icon from '@leafygreen-ui/icon';
 import { uiColors } from '@leafygreen-ui/palette';
 import TextInput from '@leafygreen-ui/text-input';
 import useScreenSize from '../../hooks/useScreenSize';
-import { theme } from '../../theme/docsTheme';
-import { getSearchbarResultsFromJSON } from '../../utils/get-searchbar-results-from-json';
 import SearchContext from './SearchContext';
+import { useClickOutside } from '../../hooks/use-click-outside';
+import { theme } from '../../theme/docsTheme';
 import SearchDropdown from './SearchDropdown';
 
 const BUTTON_SIZE = theme.size.medium;
 const GO_BUTTON_COLOR = uiColors.green.light3;
 const GO_BUTTON_SIZE = '20px';
+const NUMBER_SEARCH_RESULTS = 9;
 const SEARCH_DELAY_TIME = 200;
 const SEARCHBAR_DESKTOP_WIDTH = 372;
 const SEARCHBAR_HEIGHT = 36;
@@ -199,57 +200,47 @@ const SearchbarContainer = styled('div')`
   }
 `;
 
-const Searchbar = ({
-  getResultsFromJson = getSearchbarResultsFromJSON,
-  isExpanded,
-  setIsExpanded,
-  searchParamsToURL,
-}) => {
+const Searchbar = ({ getResultsFromJSON, isExpanded, setIsExpanded, searchParamsToURL }) => {
   const [value, setValue] = useState('');
   const { isMobile } = useScreenSize();
-  const [blurEvent, setBlurEvent] = useState(null);
   const [searchEvent, setSearchEvent] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
+  const ref = useRef(null);
 
   // A user is searching if the text input is focused and it is not empty
   const isSearching = useMemo(() => !!value && isFocused, [isFocused, value]);
   const shouldShowGoButton = useMemo(() => !!value && !isMobile, [isMobile, value]);
-  const onFocus = useCallback(() => {
-    clearTimeout(blurEvent);
-    setIsFocused(true);
-  }, [blurEvent]);
-  // The React onBlur event fires when tabbing between child elements
+  const onFocus = useCallback(() => setIsFocused(true), []);
   const onBlur = useCallback(() => {
-    setBlurEvent(
-      setTimeout(() => {
-        setIsFocused(false);
-        setIsExpanded(!!value);
-      }, 0)
-    );
+    setIsFocused(false);
+    setIsExpanded(!!value);
   }, [setIsExpanded, value]);
   const onSearchChange = useCallback(
     e => {
-      const value = e.target.value;
-      setValue(e.target.value);
+      const enteredValue = e.target.value;
+      setValue(enteredValue);
+      setIsFocused(true);
       // Debounce any queued search event since the query has changed
       clearTimeout(searchEvent);
-      if (value) {
+      if (enteredValue) {
         // Set a timeout to trigger the search to avoid over-requesting
         setSearchEvent(
           setTimeout(async () => {
-            const result = await fetch(searchParamsToURL(value, {}));
+            const result = await fetch(searchParamsToURL(enteredValue, {}));
             const resultJson = await result.json();
-            setSearchResults(getResultsFromJson(resultJson));
+            setSearchResults(getResultsFromJSON(resultJson, NUMBER_SEARCH_RESULTS));
           }, SEARCH_DELAY_TIME)
         );
       }
     },
-    [getResultsFromJson, searchEvent, searchParamsToURL]
+    [getResultsFromJSON, searchEvent, searchParamsToURL]
   );
+  // Close the dropdown and remove focus when clicked outside
+  useClickOutside(ref, onBlur);
   return (
     <SearchContext.Provider value={value}>
-      <SearchbarContainer isExpanded={isExpanded} onBlur={onBlur} onFocus={onFocus}>
+      <SearchbarContainer isExpanded={isExpanded} onFocus={onFocus} ref={ref}>
         {isExpanded ? (
           <>
             <MagnifyingGlass glyph="MagnifyingGlass" />
