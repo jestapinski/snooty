@@ -15,9 +15,6 @@ const StyledResultText = styled('p')`
   letter-spacing: 0.5px;
   margin: 0;
   padding-left: ${theme.size.medium};
-  @media ${theme.screenSize.upToXSmall} {
-    padding-left: ${theme.size.default};
-  }
 `;
 
 const SearchResultsContainer = styled('div')`
@@ -45,17 +42,8 @@ const SearchResultsContainer = styled('div')`
 const StyledSearchResult = styled(SearchResult)`
   max-height: 100%;
   height: 100%;
-  padding: ${theme.size.default} ${theme.size.medium};
-  @media ${theme.screenSize.upToXSmall} {
-    background-color: #fff;
-    border: 1px solid rgba(184, 196, 194, 0.2);
-    border-radius: ${theme.size.tiny};
-    box-shadow: 0 0 ${theme.size.tiny} 0 rgba(231, 238, 236, 0.4);
-    height: calc(100% - ${theme.size.default});
-    padding: ${theme.size.default};
-    /* place-self adds both align-self and justify-self for flexbox */
-    place-self: center;
-    width: calc(100% - ${theme.size.large});
+  > div {
+    padding: ${theme.size.default} ${theme.size.medium};
   }
   @media ${theme.screenSize.upToSmall} {
     background-color: #fff;
