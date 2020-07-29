@@ -65,10 +65,10 @@ const SearchResults = ({ totalResultsCount, visibleResults }) => {
   return (
     <SearchResultsContainer>
       <StyledResultText>
-        <strong>{isMobile ? 'Top search results' : `Most Relevant Results (${totalResultsCount})`}</strong>
+        <strong>Most Relevant Results ({totalResultsCount})</strong>
       </StyledResultText>
-      {visibleResults.map(({ title, preview, url }, index) => (
-        <StyledSearchResult learnMoreLink={isMobile} key={`${url}${index}`} title={title} preview={preview} url={url} />
+      {visibleResults.map(({ title, preview, url }) => (
+        <StyledSearchResult key={url} learnMoreLink={isMobile} title={title} preview={preview} url={url} />
       ))}
     </SearchResultsContainer>
   );
