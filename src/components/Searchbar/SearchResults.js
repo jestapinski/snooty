@@ -11,7 +11,7 @@ const SEARCH_RESULT_MOBILE_HEIGHT = '156px';
 
 const StyledResultText = styled('p')`
   font-family: Akzidenz;
-  font-size: 14px;
+  font-size: ${theme.fontSize.small};
   letter-spacing: 0.5px;
   margin: 0;
   padding-left: ${theme.size.medium};
@@ -31,7 +31,7 @@ const SearchResultsContainer = styled('div')`
   /* Give top padding on desktop to offset this extending into the searchbar */
   padding-top: 38px;
   width: 100%;
-  @media ${theme.screenSize.upToXSmall} {
+  @media ${theme.screenSize.upToSmall} {
     box-shadow: none;
     grid-template-rows: ${theme.size.medium};
     grid-auto-rows: ${SEARCH_RESULT_MOBILE_HEIGHT};
@@ -56,6 +56,19 @@ const StyledSearchResult = styled(SearchResult)`
     /* place-self adds both align-self and justify-self for flexbox */
     place-self: center;
     width: calc(100% - ${theme.size.large});
+  }
+  @media ${theme.screenSize.upToSmall} {
+    background-color: #fff;
+    border: 1px solid rgba(184, 196, 194, 0.2);
+    border-radius: ${theme.size.tiny};
+    box-shadow: 0 0 ${theme.size.tiny} 0 rgba(231, 238, 236, 0.4);
+    height: calc(100% - ${theme.size.default});
+    /* place-self adds both align-self and justify-self for flexbox */
+    place-self: center;
+    width: calc(100% - ${theme.size.large});
+    > div {
+      padding: ${theme.size.default};
+    }
   }
 `;
 
