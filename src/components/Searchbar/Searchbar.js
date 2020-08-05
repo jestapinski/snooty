@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import { uiColors } from '@leafygreen-ui/palette';
 import CondensedSearchbar from './CondensedSearchbar';
@@ -56,6 +56,7 @@ const Searchbar = ({ getResultsFromJSON, isExpanded, setIsExpanded, searchParams
   const [searchEvent, setSearchEvent] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
+  const [searchFilter, setSearchFilter] = useState(null);
   const searchContainerRef = useRef(null);
   // A user is searching if the text input is focused and it is not empty
   const isSearching = useMemo(() => !!value && isFocused, [isFocused, value]);
@@ -91,16 +92,27 @@ const Searchbar = ({ getResultsFromJSON, isExpanded, setIsExpanded, searchParams
       clearTimeout(searchEvent);
       if (searchTerm) {
         // Set a timeout to trigger the search to avoid over-requesting
-        setSearchEvent(setTimeout(async () => fetchNewSearchResults(searchTerm, {}), SEARCH_DELAY_TIME));
+        setSearchEvent(setTimeout(async () => fetchNewSearchResults(searchTerm, searchFilter), SEARCH_DELAY_TIME));
       }
     },
-    [fetchNewSearchResults, searchEvent]
+    [fetchNewSearchResults, searchEvent, searchFilter]
   );
+
+  const onFilterChange = useCallback(async () => {
+    const result = await fetch(searchParamsToURL(value, searchFilter));
+    const resultJson = await result.json();
+    setSearchResults(getResultsFromJSON(resultJson, NUMBER_SEARCH_RESULTS));
+  }, [getResultsFromJSON, searchFilter, searchParamsToURL, value]);
+
+  useEffect(() => {
+    onFilterChange();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchFilter]);
 
   return (
     <SearchbarContainer isSearching={isSearching} isExpanded={isExpanded} onFocus={onFocus} ref={searchContainerRef}>
       {isExpanded ? (
-        <SearchContext.Provider value={{ searchTerm: value, shouldAutofocus }}>
+        <SearchContext.Provider value={{ searchFilter, setSearchFilter, searchTerm: value, shouldAutofocus }}>
           <ExpandedSearchbar onMobileClose={onClose} onChange={onSearchChange} value={value} />
           {isSearching && <SearchDropdown results={searchResults} />}
         </SearchContext.Provider>

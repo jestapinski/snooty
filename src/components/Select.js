@@ -29,14 +29,18 @@ const Label = styled('p')`
 `;
 
 const SelectedText = styled('p')`
+  display: block;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const Option = styled('li')`
   align-items: center;
   background-color: #fff;
   color: black;
-  display: flex;
+  display: block;
   overflow: hidden;
   padding: 10px ${theme.size.default};
   text-overflow: ellipsis;

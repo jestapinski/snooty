@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { css, keyframes } from '@emotion/core';
 import styled from '@emotion/styled';
 import Button from '@leafygreen-ui/button';
@@ -8,6 +8,7 @@ import { theme } from '../../theme/docsTheme';
 import AdvancedFiltersPane from './AdvancedFiltersPane';
 import Pagination from './Pagination';
 import SearchResults from './SearchResults';
+import SearchContext from './SearchContext';
 
 const RESULTS_PER_PAGE = 3;
 const SEARCH_FOOTER_DESKTOP_HEIGHT = theme.size.xlarge;
@@ -31,6 +32,8 @@ const fadeInAnimation = (startingOpacity, seconds) => css`
 
 const FixedHeightFiltersPane = styled(AdvancedFiltersPane)`
   height: ${SEARCH_RESULTS_DESKTOP_HEIGHT};
+  padding-left: 24px;
+  padding-right: 24px;
 `;
 
 const FixedHeightSearchResults = styled(SearchResults)`
@@ -95,6 +98,7 @@ const SearchDropdown = ({ results = [] }) => {
   const [visibleResults, setVisibleResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { isMobile } = useScreenSize();
+  const { searchFilter } = useContext(SearchContext);
   const totalPages = results ? Math.ceil(results.length / RESULTS_PER_PAGE) : 0;
   const closeFiltersPane = useCallback(() => setShowAdvancedFilters(false), []);
   const openFiltersPane = useCallback(() => setShowAdvancedFilters(true), []);
@@ -112,14 +116,18 @@ const SearchDropdown = ({ results = [] }) => {
     <SearchResultsContainer>
       <FixedHeightFiltersPane closeFiltersPane={closeFiltersPane} />
       <SearchFooter>
-        <FilterFooterButton onClick={closeFiltersPane}>Apply Search Criteria</FilterFooterButton>
+        <FilterFooterButton onClick={closeFiltersPane}>
+          Apply Search Criteria{!!searchFilter ? ' (2)' : ''}
+        </FilterFooterButton>
       </SearchFooter>
     </SearchResultsContainer>
   ) : (
     <SearchResultsContainer>
       <FixedHeightSearchResults totalResultsCount={results.length} visibleResults={visibleResults} />
       <SearchFooter>
-        <FilterFooterButton onClick={openFiltersPane}>Advanced Filters</FilterFooterButton>
+        <FilterFooterButton onClick={openFiltersPane}>
+          Advanced Filters{!!searchFilter ? ' (2)' : ''}
+        </FilterFooterButton>
         <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
       </SearchFooter>
     </SearchResultsContainer>
