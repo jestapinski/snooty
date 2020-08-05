@@ -66,7 +66,7 @@ const AdvancedFiltersPane = ({ closeFiltersPane, ...props }) => {
           <Icon glyph="ArrowLeft" size="small" />
           &nbsp;Cancel
         </StyledReturnButton>
-        <StyledSearchFilters />
+        <StyledSearchFilters hasSideLabels />
       </StyledContentContainer>
     </StyledAdvancedFiltersPane>
   );

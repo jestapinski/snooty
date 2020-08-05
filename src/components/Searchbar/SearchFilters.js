@@ -45,7 +45,7 @@ const MaxWidthSelect = styled(Select)`
   width: 175px;
 `;
 
-const SearchFilters = ({ ...props }) => {
+const SearchFilters = ({ hasSideLabels, ...props }) => {
   const { searchFilter, setSearchFilter } = useContext(SearchContext);
   const [filterResults, setFilterResults] = useState({});
   const [propertyChoices, setPropertyChoices] = useState([]);
@@ -90,7 +90,7 @@ const SearchFilters = ({ ...props }) => {
   return (
     <div {...props}>
       <SelectWrapper>
-        <SideLabelText>Product</SideLabelText>
+        {hasSideLabels && <SideLabelText>Product</SideLabelText>}
         <MaxWidthSelect
           choices={propertyChoices}
           onChange={({ value }) => setProperty(value)}
@@ -99,7 +99,7 @@ const SearchFilters = ({ ...props }) => {
         />
       </SelectWrapper>
       <SelectWrapper>
-        <SideLabelText>Version</SideLabelText>
+        {hasSideLabels && <SideLabelText>Version</SideLabelText>}
         <MaxWidthSelect
           choices={branchChoices}
           onChange={({ value }) => setBranch(value)}
