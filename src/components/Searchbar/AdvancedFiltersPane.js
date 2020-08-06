@@ -54,7 +54,6 @@ const StyledSearchFilters = styled(SearchFilters)`
 
 const AdvancedFiltersPane = ({ closeFiltersPane, ...props }) => {
   const { setSearchFilter } = useContext(SearchContext);
-
   const cancelSearch = useCallback(() => {
     setSearchFilter(null);
     closeFiltersPane();

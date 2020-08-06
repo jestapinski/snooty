@@ -52,6 +52,7 @@ const SearchFilters = ({ hasSideLabels, ...props }) => {
   const [property, setProperty] = useState(null);
   const [branchChoices, setBranchChoices] = useState([]);
   const [branch, setBranch] = useState(null);
+  // On mount, pull in the marian manifests and update filters with current values
   useEffect(() => {
     async function fetchManifests() {
       // const result = await fetch('http://marian.mongodb.com/status');
@@ -59,14 +60,13 @@ const SearchFilters = ({ hasSideLabels, ...props }) => {
       // setFilterResults(parseMarianManifests(jsonResult.manifests));
       setFilterResults(PARSED_MANIFESTS);
     }
-    fetchManifests();
-  }, []);
-  useEffect(() => {
-    if (searchFilter) {
-      const { property, branch } = parseMarianManifest(searchFilter);
-      setProperty(property);
-      setBranch(branch);
-    }
+    fetchManifests().then(() => {
+      if (searchFilter) {
+        const { property, branch } = parseMarianManifest(searchFilter);
+        setProperty(property);
+        setBranch(branch);
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
