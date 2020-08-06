@@ -29,7 +29,7 @@ const SideLabelText = styled('p')`
   font-family: Akzidenz;
   font-size: ${theme.fontSize.small};
   letter-spacing: 0.5px;
-  margin-bottom: 0;
+  margin: 0;
 `;
 
 const SelectWrapper = styled('div')`
