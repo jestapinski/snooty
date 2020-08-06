@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { css, keyframes } from '@emotion/core';
 import styled from '@emotion/styled';
 import Button from '@leafygreen-ui/button';
@@ -102,6 +102,7 @@ const SearchDropdown = ({ results = [] }) => {
   const totalPages = results ? Math.ceil(results.length / RESULTS_PER_PAGE) : 0;
   const closeFiltersPane = useCallback(() => setShowAdvancedFilters(false), []);
   const openFiltersPane = useCallback(() => setShowAdvancedFilters(true), []);
+  const filterNumberSuffix = useMemo(() => (!!searchFilter ? ' (2)' : ''), [searchFilter]);
   useEffect(() => {
     if (isMobile) {
       // If mobile, we give an overflow view, so no pagination is needed
@@ -116,18 +117,14 @@ const SearchDropdown = ({ results = [] }) => {
     <SearchResultsContainer>
       <FixedHeightFiltersPane closeFiltersPane={closeFiltersPane} />
       <SearchFooter>
-        <FilterFooterButton onClick={closeFiltersPane}>
-          Apply Search Criteria{!!searchFilter ? ' (2)' : ''}
-        </FilterFooterButton>
+        <FilterFooterButton onClick={closeFiltersPane}>Apply Search Criteria{filterNumberSuffix}</FilterFooterButton>
       </SearchFooter>
     </SearchResultsContainer>
   ) : (
     <SearchResultsContainer>
       <FixedHeightSearchResults totalResultsCount={results.length} visibleResults={visibleResults} />
       <SearchFooter>
-        <FilterFooterButton onClick={openFiltersPane}>
-          Advanced Filters{!!searchFilter ? ' (2)' : ''}
-        </FilterFooterButton>
+        <FilterFooterButton onClick={openFiltersPane}>Advanced Filters{filterNumberSuffix}</FilterFooterButton>
         <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} />
       </SearchFooter>
     </SearchResultsContainer>
