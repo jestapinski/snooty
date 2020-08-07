@@ -5,10 +5,13 @@ import Select from '../Select';
 import SearchContext from './SearchContext';
 import {
   getSortedBranchesForProperty,
-  parseMarianManifests,
   parseMarianManifest,
+  // TODO: Remove warning when Marian change is in prod
+  // eslint-disable-next-line no-unused-vars
+  parseMarianManifests,
 } from '../../utils/parse-marian-manifests';
 
+// TODO: remove when Marian change is in prod
 const PARSED_MANIFESTS = {
   Atlas: { master: 'atlas-master' },
   'Atlas Open Service Broker': { current: 'atlas-open-service-broker-current' },
@@ -52,9 +55,11 @@ const SearchFilters = ({ hasSideLabels, ...props }) => {
   const [property, setProperty] = useState(null);
   const [branchChoices, setBranchChoices] = useState([]);
   const [branch, setBranch] = useState(null);
+
   // On mount, pull in the marian manifests and update filters with current values
   useEffect(() => {
     async function fetchManifests() {
+      // TODO: Fix when Marian change is in production
       // const result = await fetch('http://marian.mongodb.com/status');
       // const jsonResult = await result.json();
       // setFilterResults(parseMarianManifests(jsonResult.manifests));
@@ -67,13 +72,18 @@ const SearchFilters = ({ hasSideLabels, ...props }) => {
         setBranch(branch);
       }
     });
+    // Ignoring exhaustive deps allows us to only run this on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Update property choices when the filter results from Marian are loaded
   useEffect(() => {
     const properties = Object.keys(filterResults);
     properties.sort();
     setPropertyChoices(properties.map(p => ({ text: p, value: p })));
   }, [filterResults]);
+
+  // Update branch choices when a property is chosen
   useEffect(() => {
     if (filterResults && filterResults[property]) {
       const branches = getSortedBranchesForProperty(filterResults, property);
@@ -81,6 +91,8 @@ const SearchFilters = ({ hasSideLabels, ...props }) => {
       setBranchChoices(branches.map(b => ({ text: b, value: b })));
     }
   }, [filterResults, property]);
+
+  // When a property and branch are chosen, update the filter to the Marian manifest value
   useEffect(() => {
     if (filterResults && property && branch && filterResults[property]) {
       setSearchFilter(filterResults[property][branch]);
